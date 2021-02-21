@@ -28,4 +28,44 @@
     <a class="btn btn-primary" href="{{ path('room_edit', {'id': room.id}) }}">edit</a>
 
     {{ include('room/_delete_form.html.twig') }}
+
+    <hr>
+    <h2>Commentaires</h2>
+    <br>
+
+    {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.id is defined %}
+        {{ include('room/_form_commentaire.html.twig') }}
+    {% else %}
+        <p>Connectez-vous pour ajouter un commentaire !</p>
+    {% endif %}
+
+    <hr>
+
+    <h5>Tous les commentaires</h5>
+    <br>
+
+
+
+    <table class="table">
+        <tbody>
+    {% for commentaire in commentaires %}
+
+    <tr style="padding: 5px;">
+        <td>
+            <p style="font-size: medium; ">{{ commentaire.user.firstName }} :</p>
+            <p style="font-size: larger; ">{{ commentaire.contenu }}</p>
+            <p style="font-size: smaller; ">le {{ commentaire.creationDate ? commentaire.creationDate|date('d-m-Y à H:i') : '' }}</p>
+        </td>
+    </tr>
+    {% else %}
+        <p>Il n'y aucun <b>commentaire</b> pour cette <b>salle</b> actuellement.</p>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.id is defined %}
+            <p>Ajoutez un commentaire dès maintenant !</p>
+        {% endif %}
+    {% endfor %}
+
+          
+        </tbody>
+    </table>
+    
 {% endblock %}

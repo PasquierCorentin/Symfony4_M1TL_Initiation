@@ -4,12 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Room;
+use App\Entity\Commentaire;
 use App\Form\RoomType;
+use App\Form\CommentaireType;
 use App\Repository\RoomRepository;
+use App\Repository\CommentaireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @Route("/room")
@@ -63,12 +67,29 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="room_show", methods={"GET"})
+     * @Route("/{id}", name="room_show", methods={"GET", "POST"})
      */
-    public function show(Room $room): Response
+    public function show(Room $room, CommentaireRepository $commentaireRepository, UserInterface $user=null, Request $request): Response
     {
+
+        $commentaire = new Commentaire();
+        $form = $this->createForm(CommentaireType::class, $commentaire);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $commentaire -> setUser($user);
+            $commentaire -> setRoom($room);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($commentaire);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('room_show', ['id' => $room->getId()]);
+        }
+
         return $this->render('room/show.html.twig', [
             'room' => $room,
+            'commentaires' => $commentaireRepository->findByRoom($room),
+            'form' => $form->createView()
         ]);
     }
 

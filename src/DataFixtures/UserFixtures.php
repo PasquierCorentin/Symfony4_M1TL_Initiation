@@ -32,6 +32,18 @@ class UserFixtures extends Fixture
         $user->setCity("test_city");
         $user->setCountry("test_country");
         $manager->persist($user);
+
+        $user = new User();
+        $user->setEmail('user@test.fr');
+        $user->setPassword($this->encoder->encodePassword($user,"User"));
+        $user->setRoles(["ROLE_USER"]);
+        $user->setFirstName("user");
+        $user->setLastName("test");
+        $user->setAddress("test_adress");
+        $user->setCity("test_city");
+        $user->setCountry("test_country");
+        $manager->persist($user);
+
         $manager->flush();
     }
 }
