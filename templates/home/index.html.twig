@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+
+    {% for message in app.flashes('success')%}
+        <div class="alert alert-success alert-dismissible">
+            {{ message }}
+        </div>
+    {% endfor %}
+<div class="container">
+    <h1>Test</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">Category</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for room in rooms %}
+        
+        <tr>
+            
+            <th>{{ room.id }}</th>
+            <td><a href="/room/{{ room.id }}">{{ room.name }}</a></td>
+            <td>{{ room.capacity }}</td>
+            <td>{{ room.category.name }}</td>
+            
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+
